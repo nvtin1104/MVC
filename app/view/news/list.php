@@ -7,3 +7,8 @@
 @else 
 <p>Khong co gi</p>
 @endif
+<?
+$number = 1;
+?>
+{{$number}}
+@php echo 2; @endPhp

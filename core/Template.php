@@ -5,11 +5,15 @@ class Template
     public function run($content, $data)
     {
         extract($data);
-        $this->content = $content;
-        $this->printEntities();
-        $this->printRaw();
-        $this->ifCondition();
-        eval('?>' . $this->content . '<?');
+        if (!empty($content)) {
+            $this->content = $content;
+            $this->printEntities();
+            $this->printRaw();
+            $this->ifCondition();
+            $this->phpBegin();
+            $this->phpEnd();
+            eval('?>' . $this->content . '<?');
+        }
     }
     public function printEntities()
     {
@@ -48,6 +52,36 @@ class Template
         if (!empty($matches[0])) {
             foreach ($matches[0] as $key =>  $value) {
                 $this->content = str_replace($matches[0][$key], '<? endif; ?>', $this->content);
+            }
+        }
+    }
+    public function phpBegin(){
+        preg_match_all('~@php~is', $this->content, $matches);
+        if (!empty($matches[0])) {
+            foreach ($matches[0] as $key =>  $value) {
+                $this->content = str_replace($matches[0][$key], '<? ', $this->content);
+            }
+        }
+    }
+    public function phpEnd(){
+        preg_match_all('~@endPhp~is', $this->content, $matches);
+        if (!empty($matches[0])) {
+            foreach ($matches[0] as $key =>  $value) {
+                $this->content = str_replace($matches[0][$key], '?> ', $this->content);
+            }
+        }
+    }
+    public function forLoop(){
+        preg_match_all('~@for\s*\((.+?)\s*\)\s*$~im', $this->content, $matches);
+        if (!empty($matches[1])) {
+            foreach ($matches[1] as $key =>  $value) {
+                $this->content = str_replace($matches[0][$key], '<? for (' . $value . '): ?>', $this->content);
+            }
+        }
+        preg_match_all('~@endfor\s*$~im', $this->content, $matches);
+        if (!empty($matches[0])) {
+            foreach ($matches[0] as $key =>  $value) {
+                $this->content = str_replace($matches[0][$key], '<? endfor; ?>', $this->content);
             }
         }
     }

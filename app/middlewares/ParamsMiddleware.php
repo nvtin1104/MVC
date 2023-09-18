@@ -3,9 +3,10 @@ class ParamsMiddleware extends Middlewares
 {
     public function handle()
     {
-        if (!empty($_SERVER['QUERY_STRING'])) {
+        if (empty($_SERVER['QUERY_STRING'])) {
             $response = new Response();
-            $response->redirect(Routes::getFullUrl());
+            var_dump(Routes::getFullUrl());
+            // $response->redirect(Routes::getFullUrl());
         }
     }
 }

@@ -1,2 +1,3 @@
 <?
 print_r($data);
+?>
